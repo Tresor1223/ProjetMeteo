@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import Moment from 'react-moment';
@@ -7,164 +7,204 @@ import 'moment/locale/fr';
 import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constants";
 import WeatherIcon from './WeatherIcon';
 import moment from 'moment';
+import { addFavs } from '../redux/actions/favs';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class FicheVille extends React.Component {
-    state = {
-        actualWeather: 0,
-        ville: '',
-        cnt: 4,
-        temps: '',
-        humidite: '',
-        pressionAtmospherique: '',
-        vitesseVent: '',
-        J1: '',
-        tempJ1: '',
-        tempminJ1: '',
-        tempmaxJ1: '',
-        J2: '',
-        tempJ2: '',
-        tempminJ2: '',
-        tempmaxJ2: '',
-        J3: '',
-        tempJ3: '',
-        tempminJ3: '',
-        tempmaxJ3: '',
-    }
-    componentDidMount() {
-        if (typeof (this.props.route.params) != 'undefined') {
-            this.state.ville = this.props.route.params.CityName;
+export default FicheVille = ({ navigation, route }) => {
+    const dispatch = useDispatch();
+    const actions = bindActionCreators({
+        addFavs,
+    }, dispatch);
+    const [ville, setVille] = useState(
+        {
+            actualWeather: 0,
+            nom: route.params.CityName,
+            cnt: 4,
+            temps: '',
+            humidite: '',
+            pressionAtmospherique: '',
+            vitesseVent: '',
+            J1: '',
+            tempJ1: '',
+            tempminJ1: '',
+            tempmaxJ1: '',
+            J2: '',
+            tempJ2: '',
+            tempminJ2: '',
+            tempmaxJ2: '',
+            J3: '',
+            tempJ3: '',
+            tempminJ3: '',
+            tempmaxJ3: '',
         }
-        this.getCityWeather();
-        this.getCityWeatherPrevision();
+    );
 
-    }
-    componentDidUpdate() {
-
-    }
-    getCityWeather() {
-        axios.get(API_URL + 'q=' + this.state.ville + '&appid=' + API_KEY + '&units=metric&lang=FR')
+    const getCityWeather = () => {
+        axios.get(API_URL + 'q=' + ville.nom + '&appid=' + API_KEY + '&units=metric&lang=FR')
             .then(response => {
-                console.log("Donnée météo chargées");
-                this.setState({
-                    actualWeather: Math.round(response.data.main.temp),
-                    temps: response.data.weather[0].description,
-                    humidite: response.data.main.humidity,
-                    pressionAtmospherique: response.data.main.pressure,
-                    vitesseVent: response.data.wind.speed,
-                    iconTA: response.data.weather[0].icon,
-
+                //console.log("Donnée météo chargées");
+                setVille(previousState => {
+                    return {
+                        ...previousState,
+                        actualWeather: Math.round(response.data.main.temp),
+                        temps: response.data.weather[0].description,
+                        humidite: response.data.main.humidity,
+                        pressionAtmospherique: response.data.main.pressure,
+                        vitesseVent: response.data.wind.speed,
+                        iconTA: response.data.weather[0].icon,
+                    }
                 });
             }).catch(error => {
-                console.log("Echec du chargement des données météo");
-                console.log(error);
+                // console.log("Echec du chargement des données météo");
+                // console.log(error);
             });
     }
 
-    getCityWeatherPrevision() {
-        axios.get(APIPREVISION_URL + 'q=' + this.state.ville + '&cnt=' + this.state.cnt + '&appid=' + APIPREVISION_KEY + '&units=metric&lang=FR')
+    const getCityWeatherPrevision = () => {
+        axios.get(APIPREVISION_URL + 'q=' + ville.nom + '&cnt=' + ville.cnt + '&appid=' + APIPREVISION_KEY + '&units=metric&lang=FR')
             .then(response => {
-                console.log("Donnée météo chargées");
-                this.setState({
-                    J1: moment(response.data.list[1].dt * 1000).format('dddd'),
-                    tempminJ1: Math.round(response.data.list[1].temp.min),
-                    tempmaxJ1: Math.round(response.data.list[1].temp.max),
+                //console.log("Donnée météo chargées");
+                setVille(previousState => {
+                    return {
+                        ...previousState,
+                        J1: moment(response.data.list[1].dt * 1000).format('dddd'),
+                        tempminJ1: Math.round(response.data.list[1].temp.min),
+                        tempmaxJ1: Math.round(response.data.list[1].temp.max),
 
-                    J2: moment(response.data.list[2].dt * 1000).format('dddd'),
-                    tempminJ2: Math.round(response.data.list[2].temp.min),
-                    tempmaxJ2: Math.round(response.data.list[2].temp.max),
+                        J2: moment(response.data.list[2].dt * 1000).format('dddd'),
+                        tempminJ2: Math.round(response.data.list[2].temp.min),
+                        tempmaxJ2: Math.round(response.data.list[2].temp.max),
 
-                    J3: moment(response.data.list[3].dt * 1000).format('dddd'),
-                    tempminJ3: Math.round(response.data.list[3].temp.min),
-                    tempmaxJ3: Math.round(response.data.list[3].temp.max),
+                        J3: moment(response.data.list[3].dt * 1000).format('dddd'),
+                        tempminJ3: Math.round(response.data.list[3].temp.min),
+                        tempmaxJ3: Math.round(response.data.list[3].temp.max),
 
-                    tempsJ1: response.data.list[1].weather[0].description,
-                    tempsJ2: response.data.list[2].weather[0].description,
-                    tempsJ3: response.data.list[3].weather[0].description,
-
+                        tempsJ1: response.data.list[1].weather[0].description,
+                        tempsJ2: response.data.list[2].weather[0].description,
+                        tempsJ3: response.data.list[3].weather[0].description,
+                    }
 
                 });
-                console.log("TempsJ1: " + this.state.tempsJ1);
-                console.log("TempsJ2: " + this.state.tempsJ2);
-                console.log("TempsJ3: " + this.state.tempsJ3);
+                // console.log("TempsJ1: " + ville.tempsJ1);
+                // console.log("TempsJ2: " + ville.tempsJ2);
+                // console.log("TempsJ3: " + ville.tempsJ3);
             }).catch(error => {
-                console.log("Echec du chargement des données météo");
+                //console.log("Echec du chargement des données météo");
             });
     }
 
-    render() {
-        return (
-            <View style={styles.container} >
-                <View style={styles.ContainInfoTop}>
-                    <Text style={styles.TextNomVile}>{this.state.ville}</Text>
-                    <WeatherIcon name={this.state.temps} style={styles.iconTempsKilFait} />
-                    <Text style={styles.TextTemp}>{this.state.actualWeather}°</Text>
-                    <Text style={styles.Temps}>{this.state.temps}</Text>
+
+    /*
+    useEffect(() => {
+        getCityWeather();
+        getCityWeatherPrevision();
+    }, []);
+    */
+    getCityWeather();
+    getCityWeatherPrevision();
+
+    return (
+        <View style={styles.container} >
+            <View style={styles.ContainInfoTop}>
+                <Text style={styles.TextNomVile}>{ville.nom}</Text>
+                <WeatherIcon name={ville.temps} style={styles.iconTempsKilFait} />
+                <Text style={styles.TextTemp}>{ville.actualWeather}°</Text>
+                <Text style={styles.Temps}>{ville.temps}</Text>
+                <Ionicons name='heart-outline' size={25} color='#657994' style={styles.iconSup} />
+            </View>
+
+
+
+            <View style={styles.InfoSupVille}>
+                <View style={styles.InfoSup}>
+                    <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
+                    <Text style={styles.TextInfoSup}>{ville.humidite}%</Text>
                 </View>
 
+                <View style={styles.InfoSup}>
+                    <Ionicons name='speedometer-outline' size={25} color='#657994' style={styles.iconSup} />
+                    <Text style={styles.TextInfoSup}>{ville.pressionAtmospherique}hPa</Text>
+                </View>
+
+                <View style={styles.InfoSup}>
+                    <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
+                    <Text style={styles.TextInfoSup}>{ville.vitesseVent}m/s</Text>
+                </View>
+            </View>
 
 
-                <View style={styles.InfoSupVille}>
-                    <View style={styles.InfoSup}>
-                        <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
-                        <Text style={styles.TextInfoSup}>{this.state.humidite}%</Text>
-                    </View>
+            <Text style={styles.Day}>Prévisions</Text>
 
-                    <View style={styles.InfoSup}>
-                        <Ionicons name='speedometer-outline' size={25} color='#657994' style={styles.iconSup} />
-                        <Text style={styles.TextInfoSup}>{this.state.pressionAtmospherique}hPa</Text>
-                    </View>
-
-                    <View style={styles.InfoSup}>
-                        <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
-                        <Text style={styles.TextInfoSup}>{this.state.vitesseVent}m/s</Text>
+            <View>
+                <View style={styles.PrevisionTemp}>
+                    <Text style={styles.TextTempHeure}>{ville.J1}</Text>
+                    <WeatherIcon name={ville.tempsJ1} style={styles.iconPrevision} />
+                    <View style={styles.TempMaxMin}>
+                        <Text style={styles.TextTempHeure}>{ville.tempmaxJ1}°</Text>
+                        <Text style={styles.TextTempHeure}>{ville.tempminJ1}°</Text>
                     </View>
                 </View>
 
-
-                <Text style={styles.Day}>Prévisions</Text>
-
-                <View>
-                    <View style={styles.PrevisionTemp}>
-                        <Text style={styles.TextTempHeure}>{this.state.J1}</Text>
-                        <WeatherIcon name={this.state.tempsJ1} style={styles.iconPrevision} />
-                        <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempmaxJ1}°</Text>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ1}°</Text>
-                        </View>
+                <View style={styles.PrevisionTemp}>
+                    <Text style={styles.TextTempHeure}>{ville.J2}</Text>
+                    <WeatherIcon name={ville.tempsJ2} style={styles.iconPrevision} />
+                    <View style={styles.TempMaxMin}>
+                        <Text style={styles.TextTempHeure}>{ville.tempmaxJ2}°</Text>
+                        <Text style={styles.TextTempHeure}>{ville.tempminJ2}°</Text>
                     </View>
+                </View>
 
-                    <View style={styles.PrevisionTemp}>
-                        <Text style={styles.TextTempHeure}>{this.state.J2}</Text>
-                        <WeatherIcon name={this.state.tempsJ2} style={styles.iconPrevision} />
-                        <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempmaxJ2}°</Text>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ2}°</Text>
-                        </View>
+                <View style={styles.PrevisionTemp}>
+                    <Text style={styles.TextTempHeure}>{ville.J3}</Text>
+                    <WeatherIcon name={ville.tempsJ3} style={styles.iconPrevision} />
+                    <View style={styles.TempMaxMin}>
+                        <Text style={styles.TextTempHeure}>{ville.tempmaxJ3}°</Text>
+                        <Text style={styles.TextTempHeure}>{ville.tempminJ3}°</Text>
                     </View>
-
-                    <View style={styles.PrevisionTemp}>
-                        <Text style={styles.TextTempHeure}>{this.state.J3}</Text>
-                        <WeatherIcon name={this.state.tempsJ3} style={styles.iconPrevision} />
-                        <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempmaxJ3}°</Text>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ3}°</Text>
-                        </View>
-                    </View>
-
                 </View>
 
             </View>
-        );
-    }
-}
 
+            <TouchableOpacity
+                style={{
+                    borderWidth: 1,
+                    borderColor: 'rgba(0,0,0,0.2)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 70,
+                    position: 'absolute',
+                    bottom: 10,
+                    right: 20,
+                    height: 70,
+                    backgroundColor: '#fff',
+                    borderRadius: 100,
+                }}
+                onPress={() => {
+                    try {
+                        actions.addFavs({ 'ville': ville.nom, 'isFav': true });
+                        console.log('ville ' + ville.nom + ' ajoutée aux favoris !');
+                    } catch (error) {
+                        console.log("Echec d'ajout des favoris !");
+                        console.log(error);
+                    }
+
+                }}
+            >
+                <Ionicons name='heart-outline' size={35} color='#e567a4' style={styles.iconSup} />
+                {/* <Icon name='plus' size={30} color='#01a699' /> */}
+            </TouchableOpacity>
+
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
         width: '100%',
         height: '100%',
-        backgroundColor: '#1c2a35',
+        backgroundColor: '#121212',
         alignItems: 'flex-start',
         paddingTop: 50,
         paddingLeft: 10,

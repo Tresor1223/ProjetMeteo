@@ -41,7 +41,7 @@ export default function BottomTabs() {
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
                 tabBarActiveTintColor: '#e567a4', // Couleur avec focus
-                tabBarInactiveTintColor: '#657994', // Couleur sans le focus
+                tabBarInactiveTintColor: '#343168', // Couleur sans le focus
             })
             }>
                 <Tab.Screen name="Accueil" component={HomePage} />
@@ -55,10 +55,10 @@ export default function BottomTabs() {
 const styles = StyleSheet.create({
     tabBar: {
         width: '100%',
-        height: 50,
-        backgroundColor: '#1c2a35',
+        height: 70,
+        backgroundColor: '#121212',
         borderTopColor: 'transparent',
-        marginBottom: 20,
+        //marginBottom: 20,
         shadowColor: 'transparent',
     },
 });

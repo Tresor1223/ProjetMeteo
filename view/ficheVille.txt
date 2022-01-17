@@ -1,45 +1,54 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import Moment from 'react-moment';
 import 'moment/locale/fr';
 import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constants";
-import moment from 'moment';
-import { LinearGradient } from "expo-linear-gradient";
 import WeatherIcon from './WeatherIcon';
+import moment from 'moment';
+import { addFavs } from '../redux/actions/favs';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class HomePage extends React.Component {
+const Requetes = ({ navigation, route }) => {
+    const dispatch = useDispatch();
+    const actions = bindActionCreators({
+        addFavs,
+    }, dispatch);
+    useEffect(() => { }, []);
+    return actions;
+}
+
+export default class FicheVille extends React.Component {
     state = {
         actualWeather: 0,
-        ville: 'Abidjan',
+        ville: '',
         cnt: 4,
         temps: '',
         humidite: '',
         pressionAtmospherique: '',
         vitesseVent: '',
         J1: '',
+        tempJ1: '',
         tempminJ1: '',
         tempmaxJ1: '',
         J2: '',
+        tempJ2: '',
         tempminJ2: '',
         tempmaxJ2: '',
         J3: '',
+        tempJ3: '',
         tempminJ3: '',
         tempmaxJ3: '',
-        matin: '',
-        soir: '',
-        nuit: '',
-        tempJ1: '',
-        tempJ2: '',
-        tempJ2: '',
-        iconTA: '',
-
-
     }
     componentDidMount() {
+        if (typeof (this.props.route.params) != 'undefined') {
+            this.state.ville = this.props.route.params.CityName;
+        }
         this.getCityWeather();
         this.getCityWeatherPrevision();
+
     }
     getCityWeather() {
         axios.get(API_URL + 'q=' + this.state.ville + '&appid=' + API_KEY + '&units=metric&lang=FR')
@@ -54,9 +63,9 @@ export default class HomePage extends React.Component {
                     iconTA: response.data.weather[0].icon,
 
                 });
-                console.log("Temps: " + this.state.temps);
             }).catch(error => {
                 console.log("Echec du chargement des données météo");
+                console.log(error);
             });
     }
 
@@ -77,36 +86,32 @@ export default class HomePage extends React.Component {
                     tempminJ3: Math.round(response.data.list[3].temp.min),
                     tempmaxJ3: Math.round(response.data.list[3].temp.max),
 
-                    matin: Math.round(response.data.list[0].temp.morn),
-                    soir: Math.round(response.data.list[0].temp.eve),
-                    nuit: Math.round(response.data.list[0].temp.night),
-                    tempJ1: response.data.list[1].weather[0].description,
-                    tempJ2: response.data.list[2].weather[0].description,
-                    tempJ3: response.data.list[3].weather[0].description,
+                    tempsJ1: response.data.list[1].weather[0].description,
+                    tempsJ2: response.data.list[2].weather[0].description,
+                    tempsJ3: response.data.list[3].weather[0].description,
 
 
                 });
-                console.log("Temps J1: " + response.data.list[1].weather[0].description);
-                console.log("Temps J2: " + response.data.list[2].weather[0].description);
-                console.log("Temps J3: " + response.data.list[3].weather[0].description);
+                console.log("TempsJ1: " + this.state.tempsJ1);
+                console.log("TempsJ2: " + this.state.tempsJ2);
+                console.log("TempsJ3: " + this.state.tempsJ3);
             }).catch(error => {
                 console.log("Echec du chargement des données météo");
             });
     }
 
-
     render() {
         return (
             <View style={styles.container} >
-                <View style={styles.InfoVille}>
-                    <View style={styles.InfoVilleTemp}>
-                        <Text style={styles.TextNomVile}>{this.state.ville}</Text>
-                        <Text style={styles.TextTemp}>{this.state.actualWeather}°</Text>
-                        <Text style={styles.Temps}>{this.state.temps}</Text>
-                    </View>
+                <View style={styles.ContainInfoTop}>
+                    <Text style={styles.TextNomVile}>{this.state.ville}</Text>
                     <WeatherIcon name={this.state.temps} style={styles.iconTempsKilFait} />
-
+                    <Text style={styles.TextTemp}>{this.state.actualWeather}°</Text>
+                    <Text style={styles.Temps}>{this.state.temps}</Text>
+                    <Ionicons name='heart-outline' size={25} color='#657994' style={styles.iconSup} />
                 </View>
+
+
 
                 <View style={styles.InfoSupVille}>
                     <View style={styles.InfoSup}>
@@ -120,64 +125,72 @@ export default class HomePage extends React.Component {
                     </View>
 
                     <View style={styles.InfoSup}>
-                        <Image source={require('../assets/img/wind.png')} style={styles.iconVent1} />
+                        <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
                         <Text style={styles.TextInfoSup}>{this.state.vitesseVent}m/s</Text>
                     </View>
                 </View>
 
-                <Text style={styles.Day}>Aujourd'hui</Text>
-
-                <View style={styles.ContainInfoTempHeure}>
-                    <View style={styles.InfoTempHeure}>
-                        <Text style={styles.TextTempHeure}>Matin</Text>
-                        <Image source={require('../assets/img/morning.png')} style={styles.iconVent} />
-                        <Text style={styles.TempHeure}>{this.state.matin}°</Text>
-                    </View>
-
-                    <View style={styles.InfoTempHeure}>
-                        <Text style={styles.TextTempHeure}>Soir</Text>
-                        <Image source={require('../assets/img/sea.png')} style={styles.iconVent} />
-                        <Text style={styles.TempHeure}>{this.state.soir}°</Text>
-                    </View>
-
-                    <View style={styles.InfoTempHeure}>
-                        <Text style={styles.TextTempHeure}>Nuit</Text>
-                        <Image source={require('../assets/img/moon.png')} style={styles.iconVent} />
-                        <Text style={styles.TempHeure}>{this.state.nuit}°</Text>
-                    </View>
-                </View>
 
                 <Text style={styles.Day}>Prévisions</Text>
 
                 <View>
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J1}</Text>
-                        <WeatherIcon name={this.state.tempJ1} style={styles.iconPrevision} />
+                        <WeatherIcon name={this.state.tempsJ1} style={styles.iconPrevision} />
                         <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ1}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempmaxJ1}°</Text>
+                            <Text style={styles.TextTempHeure}>{this.state.tempminJ1}°</Text>
                         </View>
                     </View>
 
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J2}</Text>
-                        <WeatherIcon name={this.state.tempJ2} style={styles.iconPrevision} />
+                        <WeatherIcon name={this.state.tempsJ2} style={styles.iconPrevision} />
                         <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ2}°</Text>
+                            <Text style={styles.TextTempHeure}>{this.state.tempmaxJ2}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempminJ2}°</Text>
                         </View>
                     </View>
 
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J3}</Text>
-                        <WeatherIcon name={this.state.tempJ3} style={styles.iconPrevision} />
+                        <WeatherIcon name={this.state.tempsJ3} style={styles.iconPrevision} />
                         <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ3}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempmaxJ3}°</Text>
+                            <Text style={styles.TextTempHeure}>{this.state.tempminJ3}°</Text>
                         </View>
                     </View>
 
                 </View>
+
+                <TouchableOpacity
+                    style={{
+                        borderWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.2)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 70,
+                        position: 'absolute',
+                        bottom: 10,
+                        right: 10,
+                        height: 70,
+                        backgroundColor: '#fff',
+                        borderRadius: 100,
+                    }}
+                    onPress={() => {
+                        try {
+                            Requetes().addFavs({ 'ville': this.state.ville, 'isFav': true });
+                            console.log('ville ' + this.state.ville + ' ajoutée aux favoris !');
+                        } catch (error) {
+                            console.log("Echec d'ajout des favoris !");
+                            console.log(error);
+                        }
+
+                    }}
+                >
+                    <Ionicons name='heart-outline' size={35} color='#e567a4' style={styles.iconSup} />
+                    {/* <Icon name='plus' size={30} color='#01a699' /> */}
+                </TouchableOpacity>
 
             </View>
         );
@@ -195,6 +208,11 @@ const styles = StyleSheet.create({
         paddingTop: 50,
         paddingLeft: 10,
         paddingRight: 10,
+    },
+    ContainInfoTop: {
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
     },
     TextNomVile: {
         fontSize: 25,
@@ -236,20 +254,12 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         width: 20,
         height: 30,
-        //tintColor: '#657994',
+        tintColor: '#657994',
     },
-
     iconPrevision: {
-        width: 40,
-        height: 30,
-        resizeMode: 'contain',
-    },
-
-    iconVent1: {
         resizeMode: 'contain',
         width: 20,
         height: 30,
-        tintColor: '#657994',
     },
 
     InfoSup: {
@@ -290,8 +300,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         marginBottom: 8,
-        width: '100%',
-        justifyContent: 'space-between',
     },
 
     TextTempHeure: {

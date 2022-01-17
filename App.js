@@ -27,6 +27,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '100%',
     height: '100%',
-    backgroundColor: '#1c2a35',
+    backgroundColor: '#121212',
   },
 });
