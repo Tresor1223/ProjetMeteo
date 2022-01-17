@@ -5,6 +5,7 @@ import axios from 'axios';
 import Moment from 'react-moment';
 import 'moment/locale/fr';
 import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constants";
+import WeatherIcon from './WeatherIcon';
 import moment from 'moment';
 
 export default class FicheVille extends React.Component {
@@ -87,7 +88,7 @@ export default class FicheVille extends React.Component {
             <View style={styles.container} >
                 <View style={styles.ContainInfoTop}>
                     <Text style={styles.TextNomVile}>{this.state.ville}</Text>
-                    <Image source={require('../assets/img/storm.png')} style={styles.iconTempsKilFait} />
+                    <WeatherIcon name={this.state.temps} style={styles.iconTempsKilFait} />
                     <Text style={styles.TextTemp}>{this.state.actualWeather}°</Text>
                     <Text style={styles.Temps}>{this.state.temps}</Text>
                 </View>
@@ -223,6 +224,7 @@ const styles = StyleSheet.create({
     iconTempsKilFait: {
         width: 200,
         height: 200,
+        resizeMode: 'contain',
     },
 
     InfoVille: {
