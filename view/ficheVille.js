@@ -18,12 +18,15 @@ export default class FicheVille extends React.Component {
         pressionAtmospherique: '',
         vitesseVent: '',
         J1: '',
+        tempJ1: '',
         tempminJ1: '',
         tempmaxJ1: '',
         J2: '',
+        tempJ2: '',
         tempminJ2: '',
         tempmaxJ2: '',
         J3: '',
+        tempJ3: '',
         tempminJ3: '',
         tempmaxJ3: '',
     }
@@ -51,7 +54,6 @@ export default class FicheVille extends React.Component {
                     iconTA: response.data.weather[0].icon,
 
                 });
-                console.log("Temps: " + this.state.temps);
             }).catch(error => {
                 console.log("Echec du chargement des données météo");
                 console.log(error);
@@ -64,20 +66,26 @@ export default class FicheVille extends React.Component {
                 console.log("Donnée météo chargées");
                 this.setState({
                     J1: moment(response.data.list[1].dt * 1000).format('dddd'),
-                    tempminJ1: response.data.list[1].temp.min,
-                    tempmaxJ1: response.data.list[1].temp.max,
+                    tempminJ1: Math.round(response.data.list[1].temp.min),
+                    tempmaxJ1: Math.round(response.data.list[1].temp.max),
 
                     J2: moment(response.data.list[2].dt * 1000).format('dddd'),
-                    tempminJ2: response.data.list[2].temp.min,
-                    tempmaxJ2: response.data.list[2].temp.max,
+                    tempminJ2: Math.round(response.data.list[2].temp.min),
+                    tempmaxJ2: Math.round(response.data.list[2].temp.max),
 
                     J3: moment(response.data.list[3].dt * 1000).format('dddd'),
-                    tempminJ3: response.data.list[3].temp.min,
-                    tempmaxJ3: response.data.list[3].temp.max,
+                    tempminJ3: Math.round(response.data.list[3].temp.min),
+                    tempmaxJ3: Math.round(response.data.list[3].temp.max),
+
+                    tempsJ1: response.data.list[1].weather[0].description,
+                    tempsJ2: response.data.list[2].weather[0].description,
+                    tempsJ3: response.data.list[3].weather[0].description,
 
 
                 });
-                console.log("Temps: " + this.state.temps);
+                console.log("TempsJ1: " + this.state.tempsJ1);
+                console.log("TempsJ2: " + this.state.tempsJ2);
+                console.log("TempsJ3: " + this.state.tempsJ3);
             }).catch(error => {
                 console.log("Echec du chargement des données météo");
             });
@@ -118,7 +126,7 @@ export default class FicheVille extends React.Component {
                 <View>
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J1}</Text>
-                        <Image source={require('../assets/img/sunny.png')} style={styles.iconVent} />
+                        <WeatherIcon name={this.state.tempsJ1} style={styles.iconVent} />
                         <View style={styles.TempMaxMin}>
                             <Text style={styles.TextTempHeure}>{this.state.tempminJ1}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempmaxJ1}°</Text>
@@ -127,7 +135,7 @@ export default class FicheVille extends React.Component {
 
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J2}</Text>
-                        <Image source={require('../assets/img/sunny.png')} style={styles.iconVent} />
+                        <WeatherIcon name={this.state.tempsJ2} style={styles.iconVent} />
                         <View style={styles.TempMaxMin}>
                             <Text style={styles.TextTempHeure}>{this.state.tempminJ2}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempminJ2}°</Text>
@@ -136,7 +144,7 @@ export default class FicheVille extends React.Component {
 
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J3}</Text>
-                        <Image source={require('../assets/img/sunny.png')} style={styles.iconVent} />
+                        <WeatherIcon name={this.state.tempsJ3} style={styles.iconVent} />
                         <View style={styles.TempMaxMin}>
                             <Text style={styles.TextTempHeure}>{this.state.tempminJ3}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempmaxJ3}°</Text>
@@ -211,7 +219,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         width: 20,
         height: 30,
-        tintColor: '#657994',
+        //tintColor: '#657994',
     },
 
     InfoSup: {
