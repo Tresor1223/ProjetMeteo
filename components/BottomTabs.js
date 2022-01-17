@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import HomePage from '../view/homePage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CityPage from '../view/cityPage';
 import CityView from '../view/cityView';
+import FavPage from '../view/favPage';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +46,7 @@ export default function BottomTabs() {
             }>
                 <Tab.Screen name="Accueil" component={HomePage} />
                 <Tab.Screen name="Villes" component={CityView} />
-                <Tab.Screen name="Favoris" component={CityPage} />
+                <Tab.Screen name="Favoris" component={FavPage} />
             </Tab.Navigator>
         </NavigationContainer>
     );

@@ -1,182 +1,121 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, StatusBar, View, Text, StyleSheet, Image, TextInput, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constants";
 import axios from 'axios';
 import GeoDBCitiesSearch from 'react-native-geodb';
 import WeatherIcon from './WeatherIcon';
+import { useSelector, useDispatch } from 'react-redux';
+import removeFavs, { addFavs } from '../redux/actions/favs';
+import { bindActionCreators } from 'redux';
 
 
-export default class CityPage extends React.Component {
-    state = {
-        ville: 'Yamoussoukro',
-        searchText: '',
-        actualWeather: 0,
-        humidite: '',
-        pressionAtmospherique: '',
-        vitesseVent: '',
-        pays: '',
-        dataSource: [
-            { 'ville': 'Abidjan', 'temp': 0 },
-            { 'ville': 'Man', 'temp': 0 },
-            { 'ville': 'Bouaké', 'temp': 0 },
-            { 'ville': 'San-Pédro', 'temp': 0 },
-            { 'ville': 'Paris', 'temp': 0 },
-            { 'ville': 'Bruxelles', 'temp': 0 },
-
-        ],
-    }
-    componentDidMount() {
-        this.getCityWeather();
-
-    }
-    async getCityWeather() {
-        var tempVille = this.state.dataSource;
-        for (var i = 0; i < tempVille.length; i++) {
-            tempVille[i] = await axios.get(API_URL + 'q=' + tempVille[i].ville + '&appid=' + API_KEY + '&units=metric&lang=FR')
-                .then(response => {
-                    //tempVille[i].temp = response.data.main.temp;
-                    console.log(response.data.main.temp);
-                    // Valeurs à afficher
-                    console.log("descriptionDuTemps: " + response.data.weather[0].description);
-                    return {
-                        'ville': tempVille[i].ville,
-                        'temp': Math.round(response.data.main.temp),
-                        'humidite': Math.round(response.data.main.humidity),
-                        'pressionAtmospherique': Math.round(response.data.main.pressure),
-                        'vitesseVent': Math.round(response.data.wind.speed),
-                        'pays': response.data.sys.country,
-                        'descriptionDuTemps': response.data.weather[0].description,
-                    };
-                }).catch(error => {
-                    console.log(error);
-                    console.log("Echec du chargement des données météoSSSSS");
-                    return 'error';
-                });
-        }
-        this.setState({
-            dataSource: tempVille
+export default FavPage = ({ navigation, route }) => {
+    const { favoris } = useSelector(state => state.favReducer);
+    const dispatch = useDispatch();
+    const actions = bindActionCreators({
+        addFavs,
+        removeFavs,
+    }, dispatch);
+    const [villes, setVilles] = useState(
+        {
+            source: [
+                { 'ville': 'Abidjan', 'temp': 0 },
+                { 'ville': 'Man', 'temp': 0 },
+                { 'ville': 'Bouaké', 'temp': 0 },
+                { 'ville': 'San-Pédro', 'temp': 0 },
+                { 'ville': 'Paris', 'temp': 0 },
+                { 'ville': 'Bruxelles', 'temp': 0 },
+            ],
         });
+    /*
+const getCitiesWeather = () => {
+    var tempVille = villes.source;
+    for (var i = 0; i < tempVille.length; i++) {
+        tempVille[i] = axios.get(API_URL + 'q=' + tempVille[i].ville + '&appid=' + API_KEY + '&units=metric&lang=FR')
+            .then(response => {
+                //tempVille[i].temp = response.data.main.temp;
+                console.log(response.data.main.temp);
+                // Valeurs à afficher
+                console.log("descriptionDuTemps: " + response.data.weather[0].description);
+                return {
+                    'ville': tempVille[i].ville,
+                    'temp': Math.round(response.data.main.temp),
+                    'humidite': Math.round(response.data.main.humidity),
+                    'pressionAtmospherique': Math.round(response.data.main.pressure),
+                    'vitesseVent': Math.round(response.data.wind.speed),
+                    'pays': response.data.sys.country,
+                    'descriptionDuTemps': response.data.weather[0].description,
+                };
+            }).catch(error => {
+                console.log(error);
+                console.log("Echec du chargement des données météoSSSSS");
+                return 'error';
+            });
     }
-
-    render() {
+    setVilles({
+        source: tempVille
+    });
+}
+*/
+    const renderFavoris = (favoris, index) => {
         return (
-            <View style={styles.container} >
-                <View style={styles.view}>
-                    <StatusBar style='light' />
-                    <View style={styles.header}>
-                        <GeoDBCitiesSearch
-                            languageCode='fr'
-                            //debounce={200}
-                            hidePoweredBy
-                            showActivityIndicator
-                            placeholder="Rechercher les villes"
-                            placeholderColor="#333"
-                            onSelectItem={(data) => {
-                                console.log(data.city);
-                                this.props.navigation.navigate('ficheVille', {
-                                    CityName: data.city,
-                                    CountryName: data.country,
-                                });
-                            }}
-                            styles={{
-                                textInputContainer: {
-                                    width: 320,
-                                    height: 60,
-                                    backgroundColor: 'white',
-                                    borderRadius: 25,
-                                    color: 'white',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 18,
-                                    alignItems: 'center',
-                                },
-                                contentContainer: {
-                                    //borderRadius: 25,
-                                    backgroundColor: '#121212',
-                                },
-                                separator: {
-                                    alignItems: 'center',
-                                },
-                                itemContent: {
-                                    color: 'white',
-                                },
-                                itemText: {
-                                    color: 'white',
-                                },
-                                textInput: {
-                                    backgroundColor: 'transparent',
-                                    width: '100%',
-                                    fontSize: 16,
-                                    color: 'black',
-                                },
-                            }}
-
-                            //emptyListImagePlaceholder={require('../../../assets/emptyList.png')}
-                            query={{
-                                // key: GEODB_API_KEY,
-                                api: 'geo',
-                                types: 'cities'
-                            }}
-                            params={{
-                                language: 'en',
-                                limit: 10,
-                                offset: 0
-                            }}
-                        />
+            <TouchableOpacity
+                style={styles.ContainTempVille}
+                onPress={() => {
+                    navigation.navigate('ficheVille', {
+                        CityName: favoris.ville,
+                    });
+                }}
+            >
+                <View style={styles.ContainTempVille}>
+                    <View style={styles.ContainTempVilleTop}>
+                        <View style={styles.TempVilleText}>
+                            <Text style={styles.TempText}>{favoris.temp}°</Text>
+                            <Text style={styles.TextVilleHumVent}>{favoris.ville}</Text>
+                            <Text style={styles.NomPays}>{favoris.pays}</Text>
+                        </View>
+                        <View>
+                            <WeatherIcon name={favoris.descriptionDuTemps} style={styles.iconTemp} />
+                        </View>
                     </View>
 
+                    <View style={styles.ContainValeurHumidVent}>
+                        <View style={styles.ValeurHumidVent}>
+                            <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
+                            <Text style={styles.TextVilleHumVent}>{favoris.humidite}%</Text>
+                        </View>
+
+                        <View style={styles.ValeurHumidVent}>
+                            <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
+                            <Text style={styles.TextVilleHumVent}>{favoris.vitesseVent} m/s</Text>
+                        </View>
+                    </View>
                 </View>
-
-
-                <View style={styles.body}>
-                    <FlatList
-                        data={this.state.dataSource}
-                        contentContainerStyle={styles.grid}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={styles.ContainTempVille}
-                                onPress={() => {
-                                    this.props.navigation.navigate('ficheVille', {
-                                        CityName: item.ville,
-                                    });
-                                }}
-                            >
-                                <View style={styles.ContainTempVille}>
-                                    <View style={styles.ContainTempVilleTop}>
-                                        <View style={styles.TempVilleText}>
-                                            <Text style={styles.TempText}>{item.temp}°</Text>
-                                            <Text style={styles.TextVilleHumVent}>{item.ville}</Text>
-                                            <Text style={styles.NomPays}>{item.pays}</Text>
-                                        </View>
-                                        <View>
-                                            <WeatherIcon name={item.descriptionDuTemps} style={styles.iconTemp} />
-                                        </View>
-                                    </View>
-
-                                    <View style={styles.ContainValeurHumidVent}>
-                                        <View style={styles.ValeurHumidVent}>
-                                            <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
-                                            <Text style={styles.TextVilleHumVent}>{item.humidite}%</Text>
-                                        </View>
-
-                                        <View style={styles.ValeurHumidVent}>
-                                            <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
-                                            <Text style={styles.TextVilleHumVent}>{item.vitesseVent} m/s</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        )}
-                        //Setting the number of column
-                        numColumns={2}
-                        columnWrapperStyle={{ justifyContent: 'space-around' }}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                </View>
-            </View >
+            </TouchableOpacity>
         );
     }
+
+    return (
+        <View style={styles.container} >
+            <StatusBar style='light' />
+
+            <View style={styles.body}>
+                <FlatList
+                    data={favoris}
+                    contentContainerStyle={styles.grid}
+                    renderItem={({ item, index }) => renderFavoris(item, index)}
+                    //Setting the number of column
+                    numColumns={2}
+                    columnWrapperStyle={{ justifyContent: 'space-around' }}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+            </View>
+        </View >
+    );
 }
+
+
 const styles = StyleSheet.create({
     container: {
         display: 'flex',

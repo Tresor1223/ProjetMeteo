@@ -56,7 +56,8 @@ export default class HomePage extends React.Component {
                 });
                 console.log("Temps: " + this.state.temps);
             }).catch(error => {
-                console.log("Echec du chargement des données météo");
+                console.log(error);
+                console.log("Echec du chargement des données météo (homePage)");
             });
     }
 
@@ -90,7 +91,7 @@ export default class HomePage extends React.Component {
                 console.log("Temps J2: " + response.data.list[2].weather[0].description);
                 console.log("Temps J3: " + response.data.list[3].weather[0].description);
             }).catch(error => {
-                console.log("Echec du chargement des données météo");
+                console.log("Echec du chargement des données météo (homePage)");
             });
     }
 

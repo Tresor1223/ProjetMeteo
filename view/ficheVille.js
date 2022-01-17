@@ -7,7 +7,7 @@ import 'moment/locale/fr';
 import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constants";
 import WeatherIcon from './WeatherIcon';
 import moment from 'moment';
-import { addFavs } from '../redux/actions/favs';
+import { addFavs, removeFavs } from '../redux/actions/favs';
 import { useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -15,6 +15,7 @@ export default FicheVille = ({ navigation, route }) => {
     const dispatch = useDispatch();
     const actions = bindActionCreators({
         addFavs,
+        removeFavs,
     }, dispatch);
     const [ville, setVille] = useState(
         {
@@ -43,7 +44,7 @@ export default FicheVille = ({ navigation, route }) => {
     const getCityWeather = () => {
         axios.get(API_URL + 'q=' + ville.nom + '&appid=' + API_KEY + '&units=metric&lang=FR')
             .then(response => {
-                //console.log("Donnée météo chargées");
+                console.log("Donnée météo chargées");
                 setVille(previousState => {
                     return {
                         ...previousState,
@@ -56,7 +57,7 @@ export default FicheVille = ({ navigation, route }) => {
                     }
                 });
             }).catch(error => {
-                // console.log("Echec du chargement des données météo");
+                console.log("Echec du chargement des données météo");
                 // console.log(error);
             });
     }
@@ -64,7 +65,7 @@ export default FicheVille = ({ navigation, route }) => {
     const getCityWeatherPrevision = () => {
         axios.get(APIPREVISION_URL + 'q=' + ville.nom + '&cnt=' + ville.cnt + '&appid=' + APIPREVISION_KEY + '&units=metric&lang=FR')
             .then(response => {
-                //console.log("Donnée météo chargées");
+                console.log("Donnée météo chargées");
                 setVille(previousState => {
                     return {
                         ...previousState,
@@ -90,19 +91,15 @@ export default FicheVille = ({ navigation, route }) => {
                 // console.log("TempsJ2: " + ville.tempsJ2);
                 // console.log("TempsJ3: " + ville.tempsJ3);
             }).catch(error => {
-                //console.log("Echec du chargement des données météo");
+                console.log("Echec du chargement des données météo");
             });
     }
 
 
-    /*
     useEffect(() => {
         getCityWeather();
         getCityWeatherPrevision();
     }, []);
-    */
-    getCityWeather();
-    getCityWeatherPrevision();
 
     return (
         <View style={styles.container} >
