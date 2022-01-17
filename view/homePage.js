@@ -199,13 +199,11 @@ const styles = StyleSheet.create({
     TextNomVile: {
         fontSize: 25,
         color: 'white',
-        //fontFamily: 'Montserrat',
         marginBottom: 10,
     },
     TextTemp: {
         fontSize: 45,
         color: 'white',
-        fontFamily: 'Montserrat-Bold',
         marginBottom: 10,
     },
 
@@ -214,7 +212,6 @@ const styles = StyleSheet.create({
         color: 'white',
         backgroundColor: '#343168',
         width: 170,
-        //fontFamily: 'Montserrat',
         borderRadius: 20,
         textAlign: 'center',
         padding: 5,
@@ -232,7 +229,6 @@ const styles = StyleSheet.create({
 
     TextInfoSup: {
         color: 'white',
-        //fontFamily: 'Montserrat',
         fontSize: 18,
         paddingLeft: 10,
     },
@@ -278,7 +274,6 @@ const styles = StyleSheet.create({
         color: '#677987',
         fontSize: 17,
         marginLeft: 4,
-        //fontFamily: 'Montserrat',
         marginBottom: 8,
         marginTop: 30,
     },
@@ -300,14 +295,12 @@ const styles = StyleSheet.create({
     },
 
     TextTempHeure: {
-        //fontFamily: 'Montserrat',
         color: 'white',
 
     },
 
     TempHeure: {
         color: 'white',
-        //fontFamily: 'Montserrat',
         fontSize: 20,
     },
 

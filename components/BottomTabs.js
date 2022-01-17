@@ -41,7 +41,7 @@ export default function BottomTabs() {
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
                 tabBarActiveTintColor: '#e567a4', // Couleur avec focus
-                tabBarInactiveTintColor: 'gray', // Couleur sans le focus
+                tabBarInactiveTintColor: '#657994', // Couleur sans le focus
             })
             }>
                 <Tab.Screen name="Accueil" component={HomePage} />

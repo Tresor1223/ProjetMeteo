@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
     },
 
     TempText: {
-        //fontFamily: 'Montserrat-Bold',
         color: 'white',
         fontSize: 25,
     },

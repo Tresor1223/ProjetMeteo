@@ -126,28 +126,28 @@ export default class FicheVille extends React.Component {
                 <View>
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J1}</Text>
-                        <WeatherIcon name={this.state.tempsJ1} style={styles.iconVent} />
+                        <WeatherIcon name={this.state.tempsJ1} style={styles.iconPrevision} />
                         <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ1}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempmaxJ1}°</Text>
+                            <Text style={styles.TextTempHeure}>{this.state.tempminJ1}°</Text>
                         </View>
                     </View>
 
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J2}</Text>
-                        <WeatherIcon name={this.state.tempsJ2} style={styles.iconVent} />
+                        <WeatherIcon name={this.state.tempsJ2} style={styles.iconPrevision} />
                         <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ2}°</Text>
+                            <Text style={styles.TextTempHeure}>{this.state.tempmaxJ2}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempminJ2}°</Text>
                         </View>
                     </View>
 
                     <View style={styles.PrevisionTemp}>
                         <Text style={styles.TextTempHeure}>{this.state.J3}</Text>
-                        <WeatherIcon name={this.state.tempsJ3} style={styles.iconVent} />
+                        <WeatherIcon name={this.state.tempsJ3} style={styles.iconPrevision} />
                         <View style={styles.TempMaxMin}>
-                            <Text style={styles.TextTempHeure}>{this.state.tempminJ3}°</Text>
                             <Text style={styles.TextTempHeure}>{this.state.tempmaxJ3}°</Text>
+                            <Text style={styles.TextTempHeure}>{this.state.tempminJ3}°</Text>
                         </View>
                     </View>
 
@@ -178,13 +178,11 @@ const styles = StyleSheet.create({
     TextNomVile: {
         fontSize: 25,
         color: 'white',
-        ////fontFamily: 'Montserrat'y,
         marginBottom: 10,
     },
     TextTemp: {
         fontSize: 45,
         color: 'white',
-        //fontFamily: 'Montserrat-Bold',
         marginBottom: 10,
     },
 
@@ -193,7 +191,6 @@ const styles = StyleSheet.create({
         color: 'white',
         backgroundColor: '#343168',
         width: 170,
-        //fontFamily: 'Montserrat',
         borderRadius: 20,
         textAlign: 'center',
         padding: 5,
@@ -211,7 +208,6 @@ const styles = StyleSheet.create({
 
     TextInfoSup: {
         color: 'white',
-        //fontFamily: 'Montserrat',
         fontSize: 18,
         paddingLeft: 10,
     },
@@ -219,7 +215,12 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         width: 20,
         height: 30,
-        //tintColor: '#657994',
+        tintColor: '#657994',
+    },
+    iconPrevision: {
+        resizeMode: 'contain',
+        width: 20,
+        height: 30,
     },
 
     InfoSup: {
@@ -244,7 +245,6 @@ const styles = StyleSheet.create({
         color: '#677987',
         fontSize: 17,
         marginLeft: 4,
-        //fontFamily: 'Montserrat',
         marginBottom: 8,
         marginTop: 30,
     },
@@ -264,14 +264,12 @@ const styles = StyleSheet.create({
     },
 
     TextTempHeure: {
-        //fontFamily: 'Montserrat',
         color: 'white',
 
     },
 
     TempHeure: {
         color: 'white',
-        //fontFamily: 'Montserrat',
         fontSize: 20,
     },
 
