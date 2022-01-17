@@ -1,22 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Test from './components/test';
+import HomePage from './view/homePage';
+import BottomTabs from './components/BottomTabs';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Projet météo react native</Text>
-      <Test/>
-      <StatusBar style="auto" />
+
+      <StatusBar style="light" />
+      <BottomTabs />
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#1c2a35',
   },
 });
