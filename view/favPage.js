@@ -1,12 +1,12 @@
 import React from 'react';
-import { StatusBar, View, StyleSheet, FlatList } from 'react-native';
+import { StatusBar, View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import FavBox from '../components/FavBox';
 
 
 export default FavPage = ({ navigation, route }) => {
-    const { favoris } = useSelector(state => state.favReducer);
-    // console.log(favoris)
+    const { favs } = useSelector(state => state.favReducer);
+    console.log(favs)
 
     return (
         <View style={styles.container} >
@@ -14,13 +14,13 @@ export default FavPage = ({ navigation, route }) => {
 
             <View style={styles.body}>
                 <FlatList
-                    data={favoris}
+                    data={favs}
                     contentContainerStyle={styles.grid}
-                    renderItem={({ item, index }) => <FavBox ville={item} />}
+                    renderItem={({ item, index }) => <FavBox city={item} />}
                     //Setting the number of column
                     numColumns={2}
                     columnWrapperStyle={{ justifyContent: 'space-around' }}
-                    keyExtractor={(item, index) => item.ville}
+                    keyExtractor={(item, index) => item.nom}
                 />
             </View>
         </View >

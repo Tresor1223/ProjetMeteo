@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { removeFavs, addFavs } from '../redux/actions/favs';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
 import favReducer from '../redux/reducers/favReducer';
+import WeatherIcon from '../view/WeatherIcon';
 
 const FavBox = ({ city }) => {
 
@@ -34,7 +35,7 @@ const FavBox = ({ city }) => {
 
     }
 
-    const boxFavState = (id, ville, temp, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => {
+    const boxFavState = (id, ville, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => {
         if (favs.findIndex(idChecker, id) != -1) {
             actions.removeFavs(id)
             setIsFav(false)
@@ -42,7 +43,7 @@ const FavBox = ({ city }) => {
             actions.removeFavs(id)
             setIsFav(false)
         } else {
-            actions.addFavs({ id: id, ville: ville, temp: temp, humidite: humidite, pressionAtmospherique: pressionAtmospherique, vitesseVent: vitesseVent, pays: pays, descriptionDuTemps: descriptionDuTemps })
+            actions.addFavs({ id: id, ville: ville, actualWeather: actualWeather, humidite: humidite, pressionAtmospherique: pressionAtmospherique, vitesseVent: vitesseVent, pays: pays, descriptionDuTemps: descriptionDuTemps })
             setIsFav(true)
         }
     }
@@ -89,29 +90,29 @@ const FavBox = ({ city }) => {
             <View style={styles.ContainTempVille}>
                 <View style={styles.ContainTempVilleTop}>
                     <View style={styles.TempVilleText}>
-                        <Text style={styles.TempText}>{favs.temp}°</Text>
-                        <Text style={styles.TextVilleHumVent}>{favs.ville}</Text>
-                        <Text style={styles.NomPays}>{favs.pays}</Text>
+                        <Text style={styles.TempText}>{city.actualWeather}°</Text>
+                        <Text style={styles.TextVilleHumVent}>{city.ville}</Text>
+                        <Text style={styles.NomPays}>{city.pays}</Text>
                         <TouchableOpacity
-                        //onPress={(id, ville, temp, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => boxFavState(city.id, city.ville, city.temp, city.humidite, city.pressionAtmospherique, city.vitesseVent, city.pays, city.descriptionDuTemps)}
+                            onPress={(id, ville, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => boxFavState(city.id, city.ville, city.actualWeather, city.humidite, city.pressionAtmospherique, city.vitesseVent, city.pays, city.descriptionDuTemps)}
                         >
                             <FavIcon cityId={city.id} />
                         </TouchableOpacity>
                     </View>
                     <View>
-                        <WeatherIcon name={favs.descriptionDuTemps} style={styles.iconTemp} />
+                        <WeatherIcon name={city.descriptionDuTemps} style={styles.iconTemp} />
                     </View>
                 </View>
 
                 <View style={styles.ContainValeurHumidVent}>
                     <View style={styles.ValeurHumidVent}>
                         <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
-                        <Text style={styles.TextVilleHumVent}>{favs.humidite}%</Text>
+                        <Text style={styles.TextVilleHumVent}>{city.humidite}%</Text>
                     </View>
 
                     <View style={styles.ValeurHumidVent}>
                         <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
-                        <Text style={styles.TextVilleHumVent}>{favs.vitesseVent} m/s</Text>
+                        <Text style={styles.TextVilleHumVent}>{city.vitesseVent} m/s</Text>
                     </View>
                 </View>
             </View>

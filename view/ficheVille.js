@@ -16,7 +16,7 @@ export default FicheVille = ({ navigation, route }) => {
 
     const [isFav, setIsFav] = useState(false)
     const { favs } = useSelector(state => state.favReducer)
-    console.log(favs)
+    //console.log(favs)
     const dispatch = useDispatch()
 
     const actions = bindActionCreators({
@@ -25,14 +25,14 @@ export default FicheVille = ({ navigation, route }) => {
     }, dispatch)
 
     function idChecker(cityInstance) {
-        console.log('cityInstance ' + cityInstance.id)
+        //console.log('cityInstance ' + cityInstance.id)
         return cityInstance.id == this;
     }
 
     const FavIcon = (props) => {
 
         const cityId = props.cityId
-        console.log('cityId' + cityId)
+        //console.log('cityId' + cityId)
         if (favs.findIndex(idChecker, cityId) != -1) {
             //console.log(ville.nom + ' est déjà dans les favoris')
             return <Ionicons name='heart' size={35} color='#e567a4' style={styles.iconSup} />
@@ -46,7 +46,7 @@ export default FicheVille = ({ navigation, route }) => {
 
     }
 
-    const favState = (id, nom, temp, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => {
+    const favState = (id, nom, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => {
         if (favs.findIndex(idChecker, id) != -1) {
             actions.removeFavs(id)
             setIsFav(false)
@@ -54,7 +54,7 @@ export default FicheVille = ({ navigation, route }) => {
             actions.removeFavs(id)
             setIsFav(false)
         } else {
-            actions.addFavs({ id: id, ville: nom, temp: temp, humidite: humidite, pressionAtmospherique: pressionAtmospherique, vitesseVent: vitesseVent, pays: pays, descriptionDuTemps: descriptionDuTemps })
+            actions.addFavs({ id: id, ville: nom, actualWeather: actualWeather, humidite: humidite, pressionAtmospherique: pressionAtmospherique, vitesseVent: vitesseVent, pays: pays, descriptionDuTemps: descriptionDuTemps })
             setIsFav(true)
         }
     }
@@ -101,7 +101,7 @@ export default FicheVille = ({ navigation, route }) => {
                 });
             }).catch(error => {
                 console.log("Echec du chargement des données météo");
-                // console.log(error);
+                console.log(error);
             });
     }
 
@@ -222,10 +222,10 @@ export default FicheVille = ({ navigation, route }) => {
                     backgroundColor: '#fff',
                     borderRadius: 100,
                 }}
-                onPress={(id, nom, temp, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => favState(ville.id, ville.nom, ville.temp, ville.humidite, ville.pressionAtmospherique, ville.vitesseVent, ville.pays, ville.descriptionDuTemps)}
+                onPress={(id, nom, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => favState(ville.id, ville.nom, ville.actualWeather, ville.humidite, ville.pressionAtmospherique, ville.vitesseVent, ville.pays, ville.descriptionDuTemps)}
             >
                 {
-                    console.log('city ' + route.params.city.id)
+                    //console.log('city ' + route.params.city.id)
                 }
                 <FavIcon cityId={route.params.city.id} />
             </TouchableOpacity>

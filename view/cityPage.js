@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, StatusBar, View, Text, StyleSheet, Image, TextInput, FlatList } from 'react-native';
+import { TouchableOpacity, StatusBar, View, Text, StyleSheet, Image, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constants";
 import axios from 'axios';
@@ -74,11 +74,11 @@ export default class CityPage extends React.Component {
                             placeholder="Rechercher les villes"
                             placeholderColor="#333"
                             onSelectItem={(data) => {
-                                console.log(data.city);
+                                console.log(data.city + data.id);
                                 this.props.navigation.navigate('ficheVille', {
-                                    id: item.id,
-                                    CityName: item.ville,
-                                    city: item,
+                                    id: data.id,
+                                    CityName: data.city,
+                                    city: data,
                                 });
                             }}
                             styles={{
