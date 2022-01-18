@@ -36,14 +36,16 @@ const FavBox = ({ city }) => {
     }
 
     const boxFavState = (id) => {
-        if (favs.findIndex(idChecker, id) != -1) {
+        /*if (favs.findIndex(idChecker, id) != -1) {
             actions.removeFavs(id)
             setIsFav(false)
         }
         if (isFav) {
             actions.removeFavs(id)
             setIsFav(false)
-        }
+        }*/
+        actions.removeFavs(id)
+        setIsFav(false)
     }
 
     return (
