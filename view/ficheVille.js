@@ -222,11 +222,8 @@ export default FicheVille = ({ navigation, route }) => {
                     backgroundColor: '#fff',
                     borderRadius: 100,
                 }}
-                onPress={(id, nom, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => favState(ville.id, ville.nom, ville.actualWeather, ville.humidite, ville.pressionAtmospherique, ville.vitesseVent, ville.pays, ville.descriptionDuTemps)}
+                onPress={(id, nom, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => favState(route.params.city.id, ville.nom, ville.actualWeather, ville.humidite, ville.pressionAtmospherique, ville.vitesseVent, ville.pays, ville.descriptionDuTemps)}
             >
-                {
-                    //console.log('city ' + route.params.city.id)
-                }
                 <FavIcon cityId={route.params.city.id} />
             </TouchableOpacity>
 

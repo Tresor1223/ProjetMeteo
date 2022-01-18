@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { StatusBar, View, StyleSheet, FlatList, Text } from 'react-native';
 import { useSelector } from 'react-redux';
 import FavBox from '../components/FavBox';
 
@@ -13,6 +13,7 @@ export default FavPage = ({ navigation, route }) => {
             <StatusBar style='light' />
 
             <View style={styles.body}>
+                <Text style={styles.title}>Favoris</Text>
                 <FlatList
                     data={favs}
                     contentContainerStyle={styles.grid}
@@ -97,6 +98,12 @@ const styles = StyleSheet.create({
     TempText: {
         color: 'white',
         fontSize: 25,
+    },
+    title: {
+        color: 'white',
+        fontSize: 25,
+        textAlign: 'center',
+        marginBottom: 15,
     },
     view: {
         flex: 0.8,

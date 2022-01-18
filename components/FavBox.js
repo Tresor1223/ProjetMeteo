@@ -35,88 +35,47 @@ const FavBox = ({ city }) => {
 
     }
 
-    const boxFavState = (id, ville, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => {
+    const boxFavState = (id) => {
         if (favs.findIndex(idChecker, id) != -1) {
             actions.removeFavs(id)
             setIsFav(false)
-        } else if (isFav) {
+        }
+        if (isFav) {
             actions.removeFavs(id)
             setIsFav(false)
-        } else {
-            actions.addFavs({ id: id, ville: ville, actualWeather: actualWeather, humidite: humidite, pressionAtmospherique: pressionAtmospherique, vitesseVent: vitesseVent, pays: pays, descriptionDuTemps: descriptionDuTemps })
-            setIsFav(true)
         }
-    }
-
-    const getCitiesWeather = () => {
-        var tempVille = villes.source;
-        for (var i = 0; i < tempVille.length; i++) {
-            tempVille[i] = axios.get(API_URL + 'q=' + tempVille[i].ville + '&appid=' + API_KEY + '&units=metric&lang=FR')
-                .then(response => {
-                    //tempVille[i].temp = response.data.main.temp;
-                    console.log(response.data.main.temp);
-                    // Valeurs à afficher
-                    console.log("descriptionDuTemps: " + response.data.weather[0].description);
-                    return {
-                        'id': response.data.id,
-                        'ville': tempVille[i].ville,
-                        'temp': Math.round(response.data.main.temp),
-                        'humidite': Math.round(response.data.main.humidity),
-                        'pressionAtmospherique': Math.round(response.data.main.pressure),
-                        'vitesseVent': Math.round(response.data.wind.speed),
-                        'pays': response.data.sys.country,
-                        'descriptionDuTemps': response.data.weather[0].description,
-                    };
-                }).catch(error => {
-                    console.log(error);
-                    console.log("Echec du chargement des données météoSSSSS");
-                    return 'error';
-                });
-        }
-        setVilles({
-            source: tempVille
-        });
     }
 
     return (
-        <TouchableOpacity
-            style={styles.ContainTempVille}
-            onPress={() => {
-                navigation.navigate('ficheVille', {
-                    CityName: city.ville,
-                });
-            }}
-        >
-            <View style={styles.ContainTempVille}>
-                <View style={styles.ContainTempVilleTop}>
-                    <View style={styles.TempVilleText}>
-                        <Text style={styles.TempText}>{city.actualWeather}°</Text>
-                        <Text style={styles.TextVilleHumVent}>{city.ville}</Text>
-                        <Text style={styles.NomPays}>{city.pays}</Text>
-                        <TouchableOpacity
-                            onPress={(id, ville, actualWeather, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => boxFavState(city.id, city.ville, city.actualWeather, city.humidite, city.pressionAtmospherique, city.vitesseVent, city.pays, city.descriptionDuTemps)}
-                        >
-                            <FavIcon cityId={city.id} />
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <WeatherIcon name={city.descriptionDuTemps} style={styles.iconTemp} />
-                    </View>
+        <View style={styles.ContainTempVille}>
+            <View style={styles.ContainTempVilleTop}>
+                <View style={styles.TempVilleText}>
+                    <Text style={styles.TempText}>{city.actualWeather}°</Text>
+                    <Text style={styles.TextVilleHumVent}>{city.ville}</Text>
+                    <Text style={styles.NomPays}>{city.pays}</Text>
+                    <TouchableOpacity
+                        onPress={(id) => boxFavState(city.id)}
+                    >
+                        <FavIcon cityId={city.id} />
+                    </TouchableOpacity>
                 </View>
-
-                <View style={styles.ContainValeurHumidVent}>
-                    <View style={styles.ValeurHumidVent}>
-                        <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
-                        <Text style={styles.TextVilleHumVent}>{city.humidite}%</Text>
-                    </View>
-
-                    <View style={styles.ValeurHumidVent}>
-                        <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
-                        <Text style={styles.TextVilleHumVent}>{city.vitesseVent} m/s</Text>
-                    </View>
+                <View>
+                    <WeatherIcon name={city.descriptionDuTemps} style={styles.iconTemp} />
                 </View>
             </View>
-        </TouchableOpacity>
+
+            <View style={styles.ContainValeurHumidVent}>
+                <View style={styles.ValeurHumidVent}>
+                    <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
+                    <Text style={styles.TextVilleHumVent}>{city.humidite}%</Text>
+                </View>
+
+                <View style={styles.ValeurHumidVent}>
+                    <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
+                    <Text style={styles.TextVilleHumVent}>{city.vitesseVent} m/s</Text>
+                </View>
+            </View>
+        </View>
     );
 }
 
