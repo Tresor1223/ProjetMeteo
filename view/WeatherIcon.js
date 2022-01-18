@@ -16,7 +16,7 @@ export default class WeatherIcon extends React.Component {
             case 'pluie et neige':
                 icon = <Image style={this.props.style} source={require('../assets/img/weather/rain-snow.png')} />;
                 break;
-            case 'Haze':
+            case 'brouillard':
                 icon = <Image style={this.props.style} source={require('../assets/img/weather/wind-sun.png')} />;
                 break;
             case 'brume':
@@ -36,8 +36,6 @@ export default class WeatherIcon extends React.Component {
                 break;
             case 'peu nuageux':
                 icon = <Image style={this.props.style} source={require('../assets/img/weather/cloud.png')} />;
-                break;
-            case 'Thunderstorm':
                 break;
             case 'Rain':
                 icon = <Image style={this.props.style} source={require('../assets/img/weather/rain2.png')} />;

@@ -6,16 +6,16 @@ import axios from 'axios';
 import GeoDBCitiesSearch from 'react-native-geodb';
 import WeatherIcon from './WeatherIcon';
 import { useSelector, useDispatch } from 'react-redux';
-import removeFavs, { addFavs } from '../redux/actions/favs';
+import { removeFavs, addFavs } from '../redux/actions/favs';
 import { bindActionCreators } from 'redux';
 
 
 export default FavPage = ({ navigation, route }) => {
     const { favoris } = useSelector(state => state.favReducer);
+    // console.log(favoris);
     const dispatch = useDispatch();
     const actions = bindActionCreators({
-        addFavs,
-        removeFavs,
+        removeFavs
     }, dispatch);
     const [villes, setVilles] = useState(
         {
@@ -74,6 +74,11 @@ const getCitiesWeather = () => {
                             <Text style={styles.TempText}>{favoris.temp}°</Text>
                             <Text style={styles.TextVilleHumVent}>{favoris.ville}</Text>
                             <Text style={styles.NomPays}>{favoris.pays}</Text>
+                            <TouchableOpacity
+                                onPress={() => actions.removeFavs(index)}
+                            >
+                                <Ionicons name='heart-outline' size={25} color='#657994' style={styles.iconSup} />
+                            </TouchableOpacity>
                         </View>
                         <View>
                             <WeatherIcon name={favoris.descriptionDuTemps} style={styles.iconTemp} />
@@ -108,7 +113,7 @@ const getCitiesWeather = () => {
                     //Setting the number of column
                     numColumns={2}
                     columnWrapperStyle={{ justifyContent: 'space-around' }}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => item.ville}
                 />
             </View>
         </View >

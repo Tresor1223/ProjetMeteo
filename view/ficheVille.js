@@ -8,19 +8,27 @@ import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constan
 import WeatherIcon from './WeatherIcon';
 import moment from 'moment';
 import { addFavs, removeFavs } from '../redux/actions/favs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 export default FicheVille = ({ navigation, route }) => {
+
+    const [isFav, setIsFav] = useState(false);
+
     const dispatch = useDispatch();
+    const { favoris } = useSelector(state => state.favReducer);
+    console.log(favoris);
+
     const actions = bindActionCreators({
         addFavs,
         removeFavs,
     }, dispatch);
+
     const [ville, setVille] = useState(
         {
-            actualWeather: 0,
+            id: 0,
             nom: route.params.CityName,
+            actualWeather: 0,
             cnt: 4,
             temps: '',
             humidite: '',
@@ -41,10 +49,14 @@ export default FicheVille = ({ navigation, route }) => {
         }
     );
 
+    function idChecker(city) {
+        return city.nom == this
+    }
+
     const getCityWeather = () => {
         axios.get(API_URL + 'q=' + ville.nom + '&appid=' + API_KEY + '&units=metric&lang=FR')
             .then(response => {
-                console.log("Donnée météo chargées");
+                console.log("Donnée météo chargées (ficheVille)");
                 setVille(previousState => {
                     return {
                         ...previousState,
@@ -65,7 +77,7 @@ export default FicheVille = ({ navigation, route }) => {
     const getCityWeatherPrevision = () => {
         axios.get(APIPREVISION_URL + 'q=' + ville.nom + '&cnt=' + ville.cnt + '&appid=' + APIPREVISION_KEY + '&units=metric&lang=FR')
             .then(response => {
-                console.log("Donnée météo chargées");
+                console.log("Donnée prévisions chargées (ficheVille)");
                 setVille(previousState => {
                     return {
                         ...previousState,
@@ -101,6 +113,8 @@ export default FicheVille = ({ navigation, route }) => {
         getCityWeatherPrevision();
     }, []);
 
+
+
     return (
         <View style={styles.container} >
             <View style={styles.ContainInfoTop}>
@@ -108,7 +122,6 @@ export default FicheVille = ({ navigation, route }) => {
                 <WeatherIcon name={ville.temps} style={styles.iconTempsKilFait} />
                 <Text style={styles.TextTemp}>{ville.actualWeather}°</Text>
                 <Text style={styles.Temps}>{ville.temps}</Text>
-                <Ionicons name='heart-outline' size={25} color='#657994' style={styles.iconSup} />
             </View>
 
 
@@ -179,7 +192,7 @@ export default FicheVille = ({ navigation, route }) => {
                 }}
                 onPress={() => {
                     try {
-                        actions.addFavs({ 'ville': ville.nom, 'isFav': true });
+                        actions.addFavs({ 'ville': ville.nom, 'isFav': true, 'favIcon': 'heart' });
                         console.log('ville ' + ville.nom + ' ajoutée aux favoris !');
                     } catch (error) {
                         console.log("Echec d'ajout des favoris !");
@@ -188,7 +201,9 @@ export default FicheVille = ({ navigation, route }) => {
 
                 }}
             >
-                <Ionicons name='heart-outline' size={35} color='#e567a4' style={styles.iconSup} />
+                <Ionicons name={
+                    ville.isFav ? 'heart' : 'heart-outline'
+                } size={35} color='#e567a4' style={styles.iconSup} />
                 {/* <Icon name='plus' size={30} color='#01a699' /> */}
             </TouchableOpacity>
 

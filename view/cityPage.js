@@ -147,6 +147,8 @@ export default class CityPage extends React.Component {
                                             <Text style={styles.TempText}>{item.temp}°</Text>
                                             <Text style={styles.TextVilleHumVent}>{item.ville}</Text>
                                             <Text style={styles.NomPays}>{item.pays}</Text>
+
+
                                         </View>
                                         <View>
                                             <WeatherIcon name={item.descriptionDuTemps} style={styles.iconTemp} />
