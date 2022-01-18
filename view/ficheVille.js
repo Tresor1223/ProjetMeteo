@@ -50,7 +50,8 @@ export default FicheVille = ({ navigation, route }) => {
         if (favs.findIndex(idChecker, id) != -1) {
             actions.removeFavs(id)
             setIsFav(false)
-        } else if (isFav) {
+        }
+        if (isFav) {
             actions.removeFavs(id)
             setIsFav(false)
         } else {

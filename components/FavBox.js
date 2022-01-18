@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
 
     ContainTempVille: {
         backgroundColor: '#354b60',
-        width: '47%',
-        height: 170,
+        width: 160,
+        height: 160,
         borderRadius: 15,
         justifyContent: 'space-around',
         margin: 5,
