@@ -41,6 +41,7 @@ export default class CityPage extends React.Component {
                     console.log("descriptionDuTemps: " + response.data.weather[0].description);
                     return {
                         'ville': tempVille[i].ville,
+                        'id': response.data.id,
                         'temp': Math.round(response.data.main.temp),
                         'humidite': Math.round(response.data.main.humidity),
                         'pressionAtmospherique': Math.round(response.data.main.pressure),
@@ -75,8 +76,9 @@ export default class CityPage extends React.Component {
                             onSelectItem={(data) => {
                                 console.log(data.city);
                                 this.props.navigation.navigate('ficheVille', {
-                                    CityName: data.city,
-                                    CountryName: data.country,
+                                    id: item.id,
+                                    CityName: item.ville,
+                                    city: item,
                                 });
                             }}
                             styles={{
@@ -136,8 +138,11 @@ export default class CityPage extends React.Component {
                             <TouchableOpacity
                                 style={styles.ContainTempVille}
                                 onPress={() => {
+                                    console.log('Navigate ID' + item.id)
                                     this.props.navigation.navigate('ficheVille', {
+                                        id: item.id,
                                         CityName: item.ville,
+                                        city: item,
                                     });
                                 }}
                             >

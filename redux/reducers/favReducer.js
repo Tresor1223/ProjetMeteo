@@ -18,6 +18,11 @@ const favReducer = (state = initialState, action) => {
             };
         default:
             return state;
+        /** Vider le persistor
+        return {
+            favs: []
+        };
+        */
     }
 }
 

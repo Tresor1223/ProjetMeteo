@@ -10,20 +10,54 @@ import moment from 'moment';
 import { addFavs, removeFavs } from '../redux/actions/favs';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import favReducer from '../redux/reducers/favReducer';
 
 export default FicheVille = ({ navigation, route }) => {
 
-    const [isFav, setIsFav] = useState(false);
-
-    const dispatch = useDispatch();
-    const { favoris } = useSelector(state => state.favReducer);
-    console.log(favoris);
+    const [isFav, setIsFav] = useState(false)
+    const { favs } = useSelector(state => state.favReducer)
+    console.log(favs)
+    const dispatch = useDispatch()
 
     const actions = bindActionCreators({
         addFavs,
         removeFavs,
-    }, dispatch);
+    }, dispatch)
 
+    function idChecker(cityInstance) {
+        console.log('cityInstance ' + cityInstance.id)
+        return cityInstance.id == this;
+    }
+
+    const FavIcon = (props) => {
+
+        const cityId = props.cityId
+        console.log('cityId' + cityId)
+        if (favs.findIndex(idChecker, cityId) != -1) {
+            //console.log(ville.nom + ' est déjà dans les favoris')
+            return <Ionicons name='heart' size={35} color='#e567a4' style={styles.iconSup} />
+        } if (isFav) {
+            //console.log(ville.nom + ' est déjà dans les favoris')
+            return <Ionicons name='heart' size={35} color='#e567a4' style={styles.iconSup} />
+        } else {
+            //console.log(ville.nom + ' nest pas dans les favoris')
+            return <Ionicons name='heart-outline' size={35} color='#e567a4' style={styles.iconSup} />
+        }
+
+    }
+
+    const favState = (id, nom, temp, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => {
+        if (favs.findIndex(idChecker, id) != -1) {
+            actions.removeFavs(id)
+            setIsFav(false)
+        } else if (isFav) {
+            actions.removeFavs(id)
+            setIsFav(false)
+        } else {
+            actions.addFavs({ id: id, ville: nom, temp: temp, humidite: humidite, pressionAtmospherique: pressionAtmospherique, vitesseVent: vitesseVent, pays: pays, descriptionDuTemps: descriptionDuTemps })
+            setIsFav(true)
+        }
+    }
     const [ville, setVille] = useState(
         {
             id: 0,
@@ -49,17 +83,14 @@ export default FicheVille = ({ navigation, route }) => {
         }
     );
 
-    function idChecker(city) {
-        return city.nom == this
-    }
-
     const getCityWeather = () => {
         axios.get(API_URL + 'q=' + ville.nom + '&appid=' + API_KEY + '&units=metric&lang=FR')
             .then(response => {
-                console.log("Donnée météo chargées (ficheVille)");
+                //console.log("Donnée météo chargées (ficheVille)");
                 setVille(previousState => {
                     return {
                         ...previousState,
+                        id: response.data.id,
                         actualWeather: Math.round(response.data.main.temp),
                         temps: response.data.weather[0].description,
                         humidite: response.data.main.humidity,
@@ -77,10 +108,11 @@ export default FicheVille = ({ navigation, route }) => {
     const getCityWeatherPrevision = () => {
         axios.get(APIPREVISION_URL + 'q=' + ville.nom + '&cnt=' + ville.cnt + '&appid=' + APIPREVISION_KEY + '&units=metric&lang=FR')
             .then(response => {
-                console.log("Donnée prévisions chargées (ficheVille)");
+                //console.log("Donnée prévisions chargées (ficheVille)");
                 setVille(previousState => {
                     return {
                         ...previousState,
+                        id: response.data.id,
                         J1: moment(response.data.list[1].dt * 1000).format('dddd'),
                         tempminJ1: Math.round(response.data.list[1].temp.min),
                         tempmaxJ1: Math.round(response.data.list[1].temp.max),
@@ -113,7 +145,7 @@ export default FicheVille = ({ navigation, route }) => {
         getCityWeatherPrevision();
     }, []);
 
-
+    //const city = route.params.city;
 
     return (
         <View style={styles.container} >
@@ -190,21 +222,12 @@ export default FicheVille = ({ navigation, route }) => {
                     backgroundColor: '#fff',
                     borderRadius: 100,
                 }}
-                onPress={() => {
-                    try {
-                        actions.addFavs({ 'ville': ville.nom, 'isFav': true, 'favIcon': 'heart' });
-                        console.log('ville ' + ville.nom + ' ajoutée aux favoris !');
-                    } catch (error) {
-                        console.log("Echec d'ajout des favoris !");
-                        console.log(error);
-                    }
-
-                }}
+                onPress={(id, nom, temp, humidite, pressionAtmospherique, vitesseVent, pays, descriptionDuTemps) => favState(ville.id, ville.nom, ville.temp, ville.humidite, ville.pressionAtmospherique, ville.vitesseVent, ville.pays, ville.descriptionDuTemps)}
             >
-                <Ionicons name={
-                    ville.isFav ? 'heart' : 'heart-outline'
-                } size={35} color='#e567a4' style={styles.iconSup} />
-                {/* <Icon name='plus' size={30} color='#01a699' /> */}
+                {
+                    console.log('city ' + route.params.city.id)
+                }
+                <FavIcon cityId={route.params.city.id} />
             </TouchableOpacity>
 
         </View>

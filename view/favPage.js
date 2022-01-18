@@ -1,105 +1,12 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, StatusBar, View, Text, StyleSheet, Image, TextInput, FlatList } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { API_KEY, API_URL, APIPREVISION_KEY, APIPREVISION_URL } from "../constants";
-import axios from 'axios';
-import GeoDBCitiesSearch from 'react-native-geodb';
-import WeatherIcon from './WeatherIcon';
-import { useSelector, useDispatch } from 'react-redux';
-import { removeFavs, addFavs } from '../redux/actions/favs';
-import { bindActionCreators } from 'redux';
+import React from 'react';
+import { StatusBar, View, StyleSheet, FlatList } from 'react-native';
+import { useSelector } from 'react-redux';
+import FavBox from '../components/FavBox';
 
 
 export default FavPage = ({ navigation, route }) => {
     const { favoris } = useSelector(state => state.favReducer);
-    // console.log(favoris);
-    const dispatch = useDispatch();
-    const actions = bindActionCreators({
-        removeFavs
-    }, dispatch);
-    const [villes, setVilles] = useState(
-        {
-            source: [
-                { 'ville': 'Abidjan', 'temp': 0 },
-                { 'ville': 'Man', 'temp': 0 },
-                { 'ville': 'Bouaké', 'temp': 0 },
-                { 'ville': 'San-Pédro', 'temp': 0 },
-                { 'ville': 'Paris', 'temp': 0 },
-                { 'ville': 'Bruxelles', 'temp': 0 },
-            ],
-        });
-    /*
-const getCitiesWeather = () => {
-    var tempVille = villes.source;
-    for (var i = 0; i < tempVille.length; i++) {
-        tempVille[i] = axios.get(API_URL + 'q=' + tempVille[i].ville + '&appid=' + API_KEY + '&units=metric&lang=FR')
-            .then(response => {
-                //tempVille[i].temp = response.data.main.temp;
-                console.log(response.data.main.temp);
-                // Valeurs à afficher
-                console.log("descriptionDuTemps: " + response.data.weather[0].description);
-                return {
-                    'ville': tempVille[i].ville,
-                    'temp': Math.round(response.data.main.temp),
-                    'humidite': Math.round(response.data.main.humidity),
-                    'pressionAtmospherique': Math.round(response.data.main.pressure),
-                    'vitesseVent': Math.round(response.data.wind.speed),
-                    'pays': response.data.sys.country,
-                    'descriptionDuTemps': response.data.weather[0].description,
-                };
-            }).catch(error => {
-                console.log(error);
-                console.log("Echec du chargement des données météoSSSSS");
-                return 'error';
-            });
-    }
-    setVilles({
-        source: tempVille
-    });
-}
-*/
-    const renderFavoris = (favoris, index) => {
-        return (
-            <TouchableOpacity
-                style={styles.ContainTempVille}
-                onPress={() => {
-                    navigation.navigate('ficheVille', {
-                        CityName: favoris.ville,
-                    });
-                }}
-            >
-                <View style={styles.ContainTempVille}>
-                    <View style={styles.ContainTempVilleTop}>
-                        <View style={styles.TempVilleText}>
-                            <Text style={styles.TempText}>{favoris.temp}°</Text>
-                            <Text style={styles.TextVilleHumVent}>{favoris.ville}</Text>
-                            <Text style={styles.NomPays}>{favoris.pays}</Text>
-                            <TouchableOpacity
-                                onPress={() => actions.removeFavs(index)}
-                            >
-                                <Ionicons name='heart-outline' size={25} color='#657994' style={styles.iconSup} />
-                            </TouchableOpacity>
-                        </View>
-                        <View>
-                            <WeatherIcon name={favoris.descriptionDuTemps} style={styles.iconTemp} />
-                        </View>
-                    </View>
-
-                    <View style={styles.ContainValeurHumidVent}>
-                        <View style={styles.ValeurHumidVent}>
-                            <Ionicons name='water-outline' size={25} color='#657994' style={styles.iconSup} />
-                            <Text style={styles.TextVilleHumVent}>{favoris.humidite}%</Text>
-                        </View>
-
-                        <View style={styles.ValeurHumidVent}>
-                            <Image source={require('../assets/img/wind.png')} style={styles.iconVent} />
-                            <Text style={styles.TextVilleHumVent}>{favoris.vitesseVent} m/s</Text>
-                        </View>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        );
-    }
+    // console.log(favoris)
 
     return (
         <View style={styles.container} >
@@ -109,7 +16,7 @@ const getCitiesWeather = () => {
                 <FlatList
                     data={favoris}
                     contentContainerStyle={styles.grid}
-                    renderItem={({ item, index }) => renderFavoris(item, index)}
+                    renderItem={({ item, index }) => <FavBox ville={item} />}
                     //Setting the number of column
                     numColumns={2}
                     columnWrapperStyle={{ justifyContent: 'space-around' }}
